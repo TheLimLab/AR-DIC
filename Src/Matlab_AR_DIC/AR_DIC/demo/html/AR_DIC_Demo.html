@@ -1,0 +1,245 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>AR_DIC_Demo</title><meta name="generator" content="MATLAB 9.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-11-29"><meta name="DC.source" content="AR_DIC_Demo.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="comment">% AR_DIC_DEMO Demo for Adaptive Reference Digital Image Correlation</span>
+<span class="comment">%</span>
+<span class="comment">% This demo runs AR-DIC on the 14 frame example video (or whichever video</span>
+<span class="comment">% is specified by vidpath). Before running download the example video and</span>
+<span class="comment">% create a folder to contain the DIC output files. To setup simply set</span>
+<span class="comment">% folder paths: DIC_folder, folderpath_IJ, and vidpath.</span>
+<span class="comment">% To process the AR-DIC output run the AR_DIC_Demo_process.m script</span>
+<span class="comment">% To plot the processed results run AR_DIC_Demo_plotting.m script</span>
+<span class="comment">%</span>
+<span class="comment">% Adaptive Reference Digital Image Correlation v 1.0 2018</span>
+<span class="comment">% Biomaterials and Mechanotransduction Lab University of Nebraska-Lincoln</span>
+<span class="comment">%</span>
+<span class="comment">% See also:</span>
+<span class="comment">% AR_DIC_DEMO_PROCESS</span>
+<span class="comment">% AR_DIC_DEMO_PLOTTING</span>
+
+clear
+clc
+
+<span class="comment">%Match path to operating system '\' on Windows and '/' on Unix-based systems</span>
+<span class="comment">%set folder paths here:</span>
+DIC_folder=<span class="string">'C:\Users\mme\Desktop\DIC_output'</span>;<span class="comment">%set DIC output folder</span>
+folderpath_IJ=<span class="string">'C:\\Users\\mme\\Desktop\\DIC_output\\'</span>;<span class="comment">%DIC output folder formatted for ImageJ %placing \\ after folder important</span>
+vidpath=<span class="string">'C:\\Users\\mme\\Documents\\MATLAB\\CM_contract\\Demo_CM_contract.avi'</span>; <span class="comment">%video to analyze (use double backslashes)</span>
+
+<span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%User options%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+startframe=1; <span class="comment">%set initial reference frame</span>
+endframe=13; <span class="comment">%last video frame to analyze</span>
+method=<span class="string">'fro'</span>; <span class="comment">%use frobenius norm method for adaptive reference comparison</span>
+norm_threshold=1.5;<span class="comment">%frame becomes new reference if score is below norm threshold</span>
+stringtext=<span class="string">'*PIV3*.txt'</span>; <span class="comment">%use only 3rd iteration</span>
+<span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%End user options%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+
+<span class="comment">%%%%%%%%%%%%Adaptive reference digital image correlation%%%%%%%%%%%%%%%%%%%</span>
+<span class="comment">%initialize, start MIJI</span>
+current_directory=pwd; <span class="comment">%get current directory</span>
+currentframe=startframe+1;<span class="comment">%current frame index</span>
+refframe=startframe;<span class="comment">%reference frame index</span>
+scorekeeper=[];<span class="comment">%initialize to hold reference frame score</span>
+refstore=startframe; <span class="comment">%store start frame as first reference</span>
+Miji(false); <span class="comment">%to start Fiji without gui: Miji(false);</span>
+
+<span class="keyword">while</span> currentframe&lt;endframe+1 <span class="comment">%Run AR-DIC while sufficient video frames exist</span>
+<span class="comment">%DIC portion:</span>
+MIJ.run(<span class="string">'AVI...'</span>, [<span class="string">'open=['</span>,vidpath,<span class="string">'] first='</span>,num2str(refframe),<span class="string">' last='</span> num2str(refframe)]); <span class="comment">%open current reference frame</span>
+MIJ.run(<span class="string">'8-bit'</span>); <span class="comment">%convert to 8bit for plugin use</span>
+MIJ.run(<span class="string">'AVI...'</span>, [<span class="string">'open=['</span>,vidpath,<span class="string">'] first='</span>,num2str(currentframe),<span class="string">' last='</span> num2str(currentframe)]);<span class="comment">% open frame to analyze</span>
+MIJ.run(<span class="string">'8-bit'</span>); <span class="comment">%convert to 8bit for plugin use</span>
+MIJ.run(<span class="string">'Images to Stack'</span>,[<span class="string">'name=('</span>,num2str(refframe),<span class="string">','</span>,num2str(currentframe),<span class="string">')'</span>]); <span class="comment">%make image stack (reference frame, current frame) for plugin use</span>
+<span class="comment">%run iterative PIV plugin:</span>
+MIJ.run(<span class="string">'iterative PIV(Advanced)...'</span>, [<span class="string">'  piv1=128 sw1=256 vs1=64 piv2=64 sw2=128 vs2=32 piv3=48 sw3=96 vs3=24 correlation=0.8 batch path=['</span>,folderpath_IJ,<span class="string">']'</span>]);
+MIJ.run(<span class="string">'Close All'</span>);<span class="comment">%close all ImageJ images</span>
+
+<span class="comment">%Adaptive Reference portion:</span>
+<span class="comment">%get DIC output from MIJI and format</span>
+cd(DIC_folder) <span class="comment">%change directory to get DIC output files</span>
+PIVtext=dir(stringtext);<span class="comment">%get text file list</span>
+PIVtext_names={PIVtext.name};<span class="comment">%get file names</span>
+[~,idx]=sort_nat(PIVtext_names);<span class="comment">%get sorting index</span>
+PIVtext=PIVtext(idx);<span class="comment">%sort files in alphanumerical order</span>
+frames=length(PIVtext);<span class="comment">%get total number of frames</span>
+filename=PIVtext(frames).name;<span class="comment">%get most recent frame</span>
+M=dlmread(filename); <span class="comment">%read in text file from ImageJ PIV</span>
+dispmag=M(:,5); <span class="comment">%transfer data to individual vectors for coordinates</span>
+<span class="comment">%calculate and store reference score:</span>
+refscore=calcrefscore(dispmag,method);<span class="comment">%calculate reference score of current frame</span>
+scorekeeper(end+1)=refscore; <span class="comment">%store reference score</span>
+<span class="comment">%If reference score is below norm threshold then set current frame as reference</span>
+<span class="keyword">if</span> refscore &lt; norm_threshold
+    refframe=currentframe; <span class="comment">%set current frame as reference</span>
+    refstore(end+1)=refframe;<span class="comment">%Store reference frame</span>
+<span class="keyword">end</span>
+currentframe=currentframe+1; <span class="comment">%increment to next video frame</span>
+<span class="keyword">end</span>
+MIJ.exit; <span class="comment">%Exit ImageJ</span>
+cd(current_directory); <span class="comment">%return to original directory</span>
+
+figure <span class="comment">%plot reference score versus frame</span>
+plot(scorekeeper)<span class="comment">%plot reference scores</span>
+hold <span class="string">on</span>
+scatter(refstore-1,zeros(1,length(refstore))); <span class="comment">%mark reference frames</span>
+title(<span class="string">'AR-DIC reference score'</span>)
+xlabel(<span class="string">'frame'</span>)
+ylabel(<span class="string">'Norm score'</span>)
+hold <span class="string">off</span>
+<span class="comment">%EOF</span>
+</pre><pre class="codeoutput">ImageJ instance ended cleanly
+</pre><img vspace="5" hspace="5" src="AR_DIC_Demo_01.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+% AR_DIC_DEMO Demo for Adaptive Reference Digital Image Correlation
+% 
+% This demo runs AR-DIC on the 14 frame example video (or whichever video
+% is specified by vidpath). Before running download the example video and
+% create a folder to contain the DIC output files. To setup simply set
+% folder paths: DIC_folder, folderpath_IJ, and vidpath.
+% To process the AR-DIC output run the AR_DIC_Demo_process.m script
+% To plot the processed results run AR_DIC_Demo_plotting.m script
+%
+% Adaptive Reference Digital Image Correlation v 1.0 2018
+% Biomaterials and Mechanotransduction Lab University of Nebraska-Lincoln
+%
+% See also:
+% AR_DIC_DEMO_PROCESS
+% AR_DIC_DEMO_PLOTTING
+
+clear
+clc
+
+%Match path to operating system '\' on Windows and '/' on Unix-based systems
+%set folder paths here:
+DIC_folder='C:\Users\mme\Desktop\DIC_output';%set DIC output folder
+folderpath_IJ='C:\\Users\\mme\\Desktop\\DIC_output\\';%DIC output folder formatted for ImageJ %placing \\ after folder important
+vidpath='C:\\Users\\mme\\Documents\\MATLAB\\CM_contract\\Demo_CM_contract.avi'; %video to analyze (use double backslashes)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%User options%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+startframe=1; %set initial reference frame
+endframe=13; %last video frame to analyze
+method='fro'; %use frobenius norm method for adaptive reference comparison
+norm_threshold=1.5;%frame becomes new reference if score is below norm threshold
+stringtext='*PIV3*.txt'; %use only 3rd iteration
+%%%%%%%%%%%%%%%%%%%%%%%%%%End user options%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%Adaptive reference digital image correlation%%%%%%%%%%%%%%%%%%%
+%initialize, start MIJI
+current_directory=pwd; %get current directory
+currentframe=startframe+1;%current frame index
+refframe=startframe;%reference frame index
+scorekeeper=[];%initialize to hold reference frame score
+refstore=startframe; %store start frame as first reference
+Miji(false); %to start Fiji without gui: Miji(false);
+
+while currentframe<endframe+1 %Run AR-DIC while sufficient video frames exist
+%DIC portion:
+MIJ.run('AVI...', ['open=[',vidpath,'] first=',num2str(refframe),' last=' num2str(refframe)]); %open current reference frame
+MIJ.run('8-bit'); %convert to 8bit for plugin use
+MIJ.run('AVI...', ['open=[',vidpath,'] first=',num2str(currentframe),' last=' num2str(currentframe)]);% open frame to analyze
+MIJ.run('8-bit'); %convert to 8bit for plugin use
+MIJ.run('Images to Stack',['name=(',num2str(refframe),',',num2str(currentframe),')']); %make image stack (reference frame, current frame) for plugin use
+%run iterative PIV plugin:
+MIJ.run('iterative PIV(Advanced)...', ['  piv1=128 sw1=256 vs1=64 piv2=64 sw2=128 vs2=32 piv3=48 sw3=96 vs3=24 correlation=0.8 batch path=[',folderpath_IJ,']']);
+MIJ.run('Close All');%close all ImageJ images
+
+%Adaptive Reference portion:
+%get DIC output from MIJI and format
+cd(DIC_folder) %change directory to get DIC output files
+PIVtext=dir(stringtext);%get text file list
+PIVtext_names={PIVtext.name};%get file names
+[~,idx]=sort_nat(PIVtext_names);%get sorting index
+PIVtext=PIVtext(idx);%sort files in alphanumerical order
+frames=length(PIVtext);%get total number of frames
+filename=PIVtext(frames).name;%get most recent frame
+M=dlmread(filename); %read in text file from ImageJ PIV
+dispmag=M(:,5); %transfer data to individual vectors for coordinates
+%calculate and store reference score:
+refscore=calcrefscore(dispmag,method);%calculate reference score of current frame
+scorekeeper(end+1)=refscore; %store reference score
+%If reference score is below norm threshold then set current frame as reference
+if refscore < norm_threshold
+    refframe=currentframe; %set current frame as reference
+    refstore(end+1)=refframe;%Store reference frame
+end
+currentframe=currentframe+1; %increment to next video frame
+end
+MIJ.exit; %Exit ImageJ
+cd(current_directory); %return to original directory
+
+figure %plot reference score versus frame
+plot(scorekeeper)%plot reference scores
+hold on
+scatter(refstore-1,zeros(1,length(refstore))); %mark reference frames
+title('AR-DIC reference score')
+xlabel('frame')
+ylabel('Norm score')
+hold off
+%EOF
+##### SOURCE END #####
+--></body></html>

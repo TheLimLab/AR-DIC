@@ -1,0 +1,232 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>AR_DIC_Demo_process</title><meta name="generator" content="MATLAB 9.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-11-29"><meta name="DC.source" content="AR_DIC_Demo_process.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="comment">% AR_DIC_DEMO_PROCESS Demo to processes output of AR_DIC_Demo.m</span>
+<span class="comment">%</span>
+<span class="comment">% This demo organizes data structures, obtains mechanics measurements, and</span>
+<span class="comment">% builds a data tree from the results. Data can be explored manually by</span>
+<span class="comment">% viewing the vidobj "contract" in the variable viewer. Run the script</span>
+<span class="comment">% AR_DIC_Demo_plotting to demo plotting functions.</span>
+<span class="comment">% To setup simply set DIC_folder to the path of the DIC results.</span>
+<span class="comment">%</span>
+<span class="comment">% Adaptive Reference Digital Image Correlation v 1.0 2018</span>
+<span class="comment">% Biomaterials and Mechanotransduction Lab University of Nebraska-Lincoln</span>
+<span class="comment">%</span>
+<span class="comment">% See also:</span>
+<span class="comment">% AR_DIC_DEMO</span>
+<span class="comment">% AR_DIC_DEMO_PLOTTING</span>
+
+<span class="comment">%Match path to operating system '\' on Windows and '/' on Unix-based systems</span>
+<span class="comment">%Set path here:</span>
+DIC_folder=<span class="string">'C:\Users\mme\Desktop\DIC_output'</span>;
+
+<span class="comment">%---------------------- User Options: Set parameters-----------------------</span>
+<span class="comment">% Set processing options here. stringtext specifies the file name</span>
+<span class="comment">% identifier to search for. For example, to process ImageJ output use</span>
+<span class="comment">% '*PIV3*.txt'. pxscale (scalar) specifies the pixel to physical length</span>
+<span class="comment">% scale (e.g. px/um). timestep (scalar) specifies the time between image frames.</span>
+<span class="comment">% threshold (scalar) specifies the threshold above which displacement is considered</span>
+<span class="comment">% relevant. strain_type (string) specifies the strain calculation method to</span>
+<span class="comment">% use. Either 'green_lagrangian' or 'cauchy' to use the Green-Lagrangian or</span>
+<span class="comment">% Cauchy strain calculation methods respectively. tree_opt (string) specifies</span>
+<span class="comment">% the regioning method to use to build a data tree. Use 'box' for faster</span>
+<span class="comment">% processing on uncomplicated shapes. Use 'convex_hull' for potentially more</span>
+<span class="comment">% accurate regioning but at the expense of longer computational time.</span>
+
+stringtext=<span class="string">'*PIV3*.txt'</span>; <span class="comment">%get only output files from 3rd iteration of plugin</span>
+pxscale=1.04; <span class="comment">%set pixel micrometer scale px/um (10x objective)</span>
+timestep=0.2; <span class="comment">%set time between frames (seconds)</span>
+threshold=0.14; <span class="comment">%define displacement threshold (0.14 from Fukuda et. al)</span>
+strain_type=<span class="string">'green_lagrangian'</span>; <span class="comment">% strain calculation to use. Options: 'green_lagrangian' or 'cauchy'</span>
+tree_opt=<span class="string">'box'</span>;<span class="comment">%'box' for faster processing, 'convex_hull' for higher accuracy</span>
+<span class="comment">%-------------------------End of user Options------------------------------</span>
+
+<span class="comment">%--------------------------- Data process----------------------------------</span>
+<span class="comment">%Primary data processing occurs here:</span>
+<span class="comment">%initial data processing occurs in vidobj, (displacement, velocity, etc.):</span>
+contract=vidobj(stringtext,DIC_folder, pxscale,timestep); <span class="comment">%process contracting</span>
+data={contract};<span class="comment">%combine into cell for iteration</span>
+<span class="keyword">for</span> sets=1:length(data) <span class="comment">%iterate for length of datasets</span>
+mask_threshold(data{sets},threshold) <span class="comment">%set masks based on threshold</span>
+contraction_volume(data{sets})<span class="comment">%calculate contraction volume</span>
+[~]=measure_morphology(data{sets},tree_opt); <span class="comment">%calculate morphology parameters</span>
+construct_tree(data{sets},tree_opt); <span class="comment">%build data tree of regions</span>
+[~]=data{sets}.tree.leaf_index; <span class="comment">%get indices of all leaves (find smallest independent regions)</span>
+calc_strain(data{sets},strain_type);<span class="comment">%calculate strains</span>
+<span class="keyword">end</span>
+
+<span class="comment">%----------------------------Explore data----------------------------------</span>
+<span class="comment">%user may wish to explore data here</span>
+leaves_s100=get_node(contract.tree,contract.tree.leaf_index); <span class="comment">%get nodes from leaf indices</span>
+leaf_path=trace_path(leaves_s100{1},<span class="string">'time_sort'</span>); <span class="comment">%trace path from specified leaf to root</span>
+[sorted_percent_area,percent_area_frame_index]=sort_morphology(contract,<span class="string">'percent_area'</span>);
+[sorted_max,frame_index]=sort_morphology(contract,<span class="string">'Area'</span>);
+<span class="comment">%calculate principal strains:</span>
+strains_principal_s2=transform_strain(contract,<span class="string">'principal'</span>);
+strains_s2=strain_to_cell(contract);
+<span class="comment">%Find maximum, minimum strain</span>
+[max_val_s2,max_frame_s2,xind_s2,yind_s2]=get_max(strains_principal_s2,<span class="string">'principal_1'</span>);
+secondary_max_strain_s2=strains_principal_s2{max_frame_s2}.s2(xind_s2,yind_s2);
+[min_val_s2,min_frame_s2,xind_min_s2,yind_min_s2]=get_min(strains_principal_s2,<span class="string">'principal_2'</span>);
+secondary_min_strain_s2=strains_principal_s2{min_frame_s2}.s1(xind_min_s2,yind_min_s2);
+
+<span class="comment">%display variable summary in figure:</span>
+test=evalc(<span class="string">'contract'</span>);
+test(1:90)=[];
+test=[<span class="string">'contract '</span>, test];
+figure;
+ax_n=text(0,1,test);
+ylim([0,2]);
+set(ax_n,<span class="string">'Interpreter'</span>, <span class="string">'none'</span>)
+axis <span class="string">off</span>
+
+<span class="comment">%EOF</span>
+</pre><img vspace="5" hspace="5" src="AR_DIC_Demo_process_01.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+% AR_DIC_DEMO_PROCESS Demo to processes output of AR_DIC_Demo.m
+% 
+% This demo organizes data structures, obtains mechanics measurements, and
+% builds a data tree from the results. Data can be explored manually by
+% viewing the vidobj "contract" in the variable viewer. Run the script
+% AR_DIC_Demo_plotting to demo plotting functions.
+% To setup simply set DIC_folder to the path of the DIC results.
+% 
+% Adaptive Reference Digital Image Correlation v 1.0 2018
+% Biomaterials and Mechanotransduction Lab University of Nebraska-Lincoln
+%
+% See also:
+% AR_DIC_DEMO
+% AR_DIC_DEMO_PLOTTING
+
+%Match path to operating system '\' on Windows and '/' on Unix-based systems
+%Set path here:
+DIC_folder='C:\Users\mme\Desktop\DIC_output';
+
+%REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH User Options: Set parametersREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+% Set processing options here. stringtext specifies the file name
+% identifier to search for. For example, to process ImageJ output use 
+% '*PIV3*.txt'. pxscale (scalar) specifies the pixel to physical length
+% scale (e.g. px/um). timestep (scalar) specifies the time between image frames.
+% threshold (scalar) specifies the threshold above which displacement is considered
+% relevant. strain_type (string) specifies the strain calculation method to
+% use. Either 'green_lagrangian' or 'cauchy' to use the Green-Lagrangian or
+% Cauchy strain calculation methods respectively. tree_opt (string) specifies
+% the regioning method to use to build a data tree. Use 'box' for faster 
+% processing on uncomplicated shapes. Use 'convex_hull' for potentially more
+% accurate regioning but at the expense of longer computational time.
+
+stringtext='*PIV3*.txt'; %get only output files from 3rd iteration of plugin
+pxscale=1.04; %set pixel micrometer scale px/um (10x objective)
+timestep=0.2; %set time between frames (seconds)
+threshold=0.14; %define displacement threshold (0.14 from Fukuda et. al)
+strain_type='green_lagrangian'; % strain calculation to use. Options: 'green_lagrangian' or 'cauchy'
+tree_opt='box';%'box' for faster processing, 'convex_hull' for higher accuracy
+%REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-End of user OptionsREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
+
+%REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH- Data processREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
+%Primary data processing occurs here:
+%initial data processing occurs in vidobj, (displacement, velocity, etc.):
+contract=vidobj(stringtext,DIC_folder, pxscale,timestep); %process contracting
+data={contract};%combine into cell for iteration
+for sets=1:length(data) %iterate for length of datasets
+mask_threshold(data{sets},threshold) %set masks based on threshold
+contraction_volume(data{sets})%calculate contraction volume
+[~]=measure_morphology(data{sets},tree_opt); %calculate morphology parameters
+construct_tree(data{sets},tree_opt); %build data tree of regions
+[~]=data{sets}.tree.leaf_index; %get indices of all leaves (find smallest independent regions)
+calc_strain(data{sets},strain_type);%calculate strains
+end
+
+%REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHExplore dataREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
+%user may wish to explore data here
+leaves_s100=get_node(contract.tree,contract.tree.leaf_index); %get nodes from leaf indices
+leaf_path=trace_path(leaves_s100{1},'time_sort'); %trace path from specified leaf to root
+[sorted_percent_area,percent_area_frame_index]=sort_morphology(contract,'percent_area');
+[sorted_max,frame_index]=sort_morphology(contract,'Area');
+%calculate principal strains:
+strains_principal_s2=transform_strain(contract,'principal');
+strains_s2=strain_to_cell(contract);
+%Find maximum, minimum strain
+[max_val_s2,max_frame_s2,xind_s2,yind_s2]=get_max(strains_principal_s2,'principal_1');
+secondary_max_strain_s2=strains_principal_s2{max_frame_s2}.s2(xind_s2,yind_s2);
+[min_val_s2,min_frame_s2,xind_min_s2,yind_min_s2]=get_min(strains_principal_s2,'principal_2');
+secondary_min_strain_s2=strains_principal_s2{min_frame_s2}.s1(xind_min_s2,yind_min_s2);
+
+%display variable summary in figure:
+test=evalc('contract');
+test(1:90)=[];
+test=['contract ', test];
+figure;
+ax_n=text(0,1,test);
+ylim([0,2]);
+set(ax_n,'Interpreter', 'none')
+axis off
+
+%EOF
+##### SOURCE END #####
+--></body></html>

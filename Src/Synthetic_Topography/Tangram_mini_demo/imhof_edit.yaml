@@ -1,0 +1,61 @@
+sources:
+    osm: 
+        type: Raster
+        url: demo_topography_gray.png
+        max_zoom: 18
+    normals:
+        type: Raster
+        url: demo_topography.png
+        max_zoom: 18
+
+styles: 
+    terrain-envmap:
+        base: raster
+        lighting: false
+        raster: normal
+        shaders:
+            uniforms:
+                u_scale: .15
+                u_envmap: ../img/imhof5.jpg
+            blocks:
+                global: |
+                    // Simplified view-independent environment map
+                    vec4 applyEnvmap (in sampler2D _tex, in vec3 _normal) {
+                        const vec3 eye = vec3(0.,0.,-1.);
+                        vec3 r = reflect(eye, _normal);
+                        r.z += 1.0;
+                        float m = 2. * length(r);
+                        vec2 uv = r.xy / m + .5;
+                        return texture2D(_tex, uv);
+                    }
+                color: |                    
+                    normal.z *= u_scale;
+                    normal = normalize(normal);
+                    color = applyEnvmap(u_envmap, normal);
+
+layers:
+    terrain:
+        data: { source: normals, layer: _default }
+        draw:
+            terrain-envmap:
+                order: 0
+
+    water:
+        data: { source: osm }
+        filter: {boundary: true, kind: ocean}
+        draw:
+            lines: 
+                order: 2
+                color: [.3, .3, .3]
+                width: 1px
+
+    places:
+        data: { source: osm}
+        filter: 
+            kind: [city]
+        draw:
+            text:
+                font:
+                    fill: white
+                    size: 16px
+                    stroke: { color: '#444', width: 4px}

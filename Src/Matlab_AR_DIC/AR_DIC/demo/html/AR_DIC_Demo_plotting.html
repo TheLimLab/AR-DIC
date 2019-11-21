@@ -1,0 +1,437 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>AR_DIC_Demo_plotting</title><meta name="generator" content="MATLAB 9.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-11-29"><meta name="DC.source" content="AR_DIC_Demo_plotting.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="comment">% AR_DIC_DEMO_PLOTTING Demo to plot output of AR_DIC_Demo_process.m</span>
+<span class="comment">%</span>
+<span class="comment">% Run this script after AR_DIC_Demo_process.m to plot results.</span>
+<span class="comment">% Run in sections (Ctrl + Enter) to view plots</span>
+<span class="comment">% Basic plots in demo:</span>
+<span class="comment">%   Displacement magnitude map</span>
+<span class="comment">%   Velocity vector field</span>
+<span class="comment">%   Contraction volume vs. time</span>
+<span class="comment">%   Contraction frequency heat map</span>
+<span class="comment">%   Contraction magnitude heat map</span>
+<span class="comment">%   Accumulative spatial contraction map</span>
+<span class="comment">%   Smallest independent regions</span>
+<span class="comment">%   Raw strain vs. time at maximum strain location</span>
+<span class="comment">%   Principal strain vs. time at maximum strain location</span>
+<span class="comment">%   Raw strain field</span>
+<span class="comment">%   Principal strain field</span>
+<span class="comment">%   Displacement vs. time at maximum location, BPM calculation</span>
+<span class="comment">%   Power spectrum of reference image</span>
+<span class="comment">%   Synthetic topography image to export</span>
+<span class="comment">%</span>
+<span class="comment">% Adaptive Reference Digital Image Correlation v 1.0 2018</span>
+<span class="comment">% Biomaterials and Mechanotransduction Lab University of Nebraska-Lincoln</span>
+<span class="comment">%</span>
+<span class="comment">% See also:</span>
+<span class="comment">% AR_DIC_DEMO</span>
+<span class="comment">% AR_DIC_DEMO_PROCESS</span>
+</pre><pre class="codeinput">load(<span class="string">'demo_data.mat'</span>)<span class="comment">%load results from data file. Comment out if using newly</span>
+<span class="comment">%calculated results.</span>
+<span class="comment">%Set up plotting options:</span>
+ncont=50; <span class="comment">%number of contour levels in plots</span>
+qscale=4; <span class="comment">%quiver plot arrow scale</span>
+
+<span class="comment">%set plot defaults, white background, linewidth of 2</span>
+[~]=get(0,<span class="string">'Factory'</span>);<span class="comment">%Commands to set all figure backgrounds to white</span>
+set(0,<span class="string">'defaultfigurecolor'</span>,[1 1 1]);
+set(0,<span class="string">'defaultlinelinewidth'</span>,2);
+load(<span class="string">'cmap_custom.mat'</span>)<span class="comment">%load custom strain color map</span>
+
+<span class="comment">%Run in sections to explore plots:</span>
+</pre><img vspace="5" hspace="5" src="AR_DIC_Demo_plotting_01.png" alt=""> <pre class="codeinput"><span class="comment">%-------------------Displacement, velocity---------------------------------</span>
+contour_frame=plot_contour(contract,<span class="string">'disp'</span>,ncont,<span class="string">'parula'</span>);
+quiver_frame=plot_quiver(contract,<span class="string">'vel'</span>,qscale,<span class="string">'parula'</span>,<span class="string">'auto'</span>);
+
+<span class="comment">%supplementary:</span>
+<span class="comment">% disp_max=plot_disp_location(contract,'max');%displacement trace</span>
+<span class="comment">% binary_video=plot_binary_mask(contract);</span>
+<span class="comment">%--------------------------------------------------------------------------</span>
+</pre><img vspace="5" hspace="5" src="AR_DIC_Demo_plotting_02.png" alt=""> <img vspace="5" hspace="5" src="AR_DIC_Demo_plotting_03.png" alt=""> <pre class="codeinput"><span class="comment">%----------------------Contraction volume----------------------------------</span>
+plot_contraction_volume(contract);
+</pre><img vspace="5" hspace="5" src="AR_DIC_Demo_plotting_04.png" alt=""> <pre class="codeinput"><span class="comment">%----------------------------Heat maps-------------------------------------</span>
+figure_handle=heatmap_frequency(contract,ncont,<span class="string">'jet'</span>);
+magnitude_heatmap=heatmap_magnitude(contract,ncont,<span class="string">'jet'</span>);
+</pre><img vspace="5" hspace="5" src="AR_DIC_Demo_plotting_05.png" alt=""> <img vspace="5" hspace="5" src="AR_DIC_Demo_plotting_06.png" alt=""> <pre class="codeinput"><span class="comment">%Accumulative spatial contraction (ASC) map, smallest independent regions</span>
+ASC_map(contract.tree,<span class="string">'3D'</span>,0);<span class="comment">%ASC map</span>
+plot_node_array(leaves_s100,contract);<span class="comment">%smallest independent regions</span>
+<span class="comment">%--------------------------------------------------------------------------</span>
+</pre><img vspace="5" hspace="5" src="AR_DIC_Demo_plotting_07.png" alt=""> <img vspace="5" hspace="5" src="AR_DIC_Demo_plotting_08.png" alt=""> <pre class="codeinput"><span class="comment">%------------------------Strain trace plots--------------------------------</span>
+plot_strain(strains_s2,<span class="string">'raw'</span>,xind_s2,yind_s2,contract.timestep); <span class="comment">%raw strain at maximum location</span>
+plot_strain(strains_principal_s2,<span class="string">'principal'</span>,xind_s2,yind_s2,contract.timestep);<span class="comment">%principal strain at maximum location</span>
+</pre><img vspace="5" hspace="5" src="AR_DIC_Demo_plotting_09.png" alt=""> <img vspace="5" hspace="5" src="AR_DIC_Demo_plotting_10.png" alt=""> <img vspace="5" hspace="5" src="AR_DIC_Demo_plotting_11.png" alt=""> <pre class="codeinput"><span class="comment">%--------------------------Raw Strain maps---------------------------------</span>
+<span class="comment">% plot strain maps EXX EYY EXY</span>
+mapstyle2=cmap_comp_tens;
+frame_s=max_frame_s2;
+figure
+contourf(contract.x_mat,contract.y_mat,strains_s2{1,frame_s}.Exx,ncont,<span class="string">'LineStyle'</span>,<span class="string">'none'</span>);
+title([<span class="string">'Strain '</span>,char(949),<span class="string">'_x_x'</span>]);
+axis <span class="string">ij</span>
+axis([0 contract.xdim 0 contract.ydim])
+caxis([-0.1,0.1]) <span class="comment">%caxis([-max_val_s2,max_val_s2])</span>
+colormap(mapstyle2)
+colorbar;
+figure
+contourf(contract.x_mat,contract.y_mat,strains_s2{1,frame_s}.Eyy,ncont,<span class="string">'LineStyle'</span>,<span class="string">'none'</span>);
+title([<span class="string">'Strain '</span>,char(949),<span class="string">'_y_y'</span>]);
+axis <span class="string">ij</span>
+axis([0 contract.xdim 0 contract.ydim])
+caxis([-0.1,0.1])
+colormap(mapstyle2)
+colorbar;
+figure
+contourf(contract.x_mat,contract.y_mat,strains_s2{1,frame_s}.Exy,ncont,<span class="string">'LineStyle'</span>,<span class="string">'none'</span>);
+title([<span class="string">'Strain '</span>,char(949),<span class="string">'_x_y'</span>]);
+axis <span class="string">ij</span>
+axis([0 contract.xdim 0 contract.ydim])
+caxis([-0.1,0.1])
+colormap(mapstyle2)
+colorbar;
+<span class="comment">%--------------------------------------------------------------------------</span>
+</pre><img vspace="5" hspace="5" src="AR_DIC_Demo_plotting_12.png" alt=""> <img vspace="5" hspace="5" src="AR_DIC_Demo_plotting_13.png" alt=""> <img vspace="5" hspace="5" src="AR_DIC_Demo_plotting_14.png" alt=""> <pre class="codeinput"><span class="comment">%--------------------Principal Strain maps---------------------------------</span>
+<span class="comment">%strain map S1, S2</span>
+mapstyle2=cmap_comp_tens;<span class="comment">% mapstyle2='hot';</span>
+frame_s=contract.max_disp_frame;
+figure
+contourf(contract.x_mat,contract.y_mat,strains_principal_s2{1,frame_s}.s1,ncont,<span class="string">'LineStyle'</span>,<span class="string">'none'</span>);
+title([<span class="string">'Strain '</span>,char(949),<span class="string">'_1'</span>]);
+axis <span class="string">ij</span>
+axis([0 contract.xdim 0 contract.ydim])
+caxis([-0.1,0.1]) <span class="comment">%caxis([-max_val_s2,max_val_s2])</span>
+colormap(mapstyle2)
+colorbar;
+figure
+contourf(contract.x_mat,contract.y_mat,strains_principal_s2{1,frame_s}.s2,ncont,<span class="string">'LineStyle'</span>,<span class="string">'none'</span>);
+title([<span class="string">'Strain '</span>,char(949),<span class="string">'_2'</span>]);
+axis <span class="string">ij</span>
+axis([0 contract.xdim 0 contract.ydim])
+caxis([-0.1,0.1])
+colormap(mapstyle2)
+colorbar;
+figure
+contourf(contract.x_mat,contract.y_mat,strains_principal_s2{1,frame_s}.max_eng_shear,ncont,<span class="string">'LineStyle'</span>,<span class="string">'none'</span>);
+title([<span class="string">'Strain '</span>,char(949),<span class="string">'_shear'</span>]);
+axis <span class="string">ij</span>
+axis([0 contract.xdim 0 contract.ydim])
+caxis([-0.1,0.1])
+colormap(mapstyle2)
+colorbar;
+
+<span class="comment">%supplementary:</span>
+<span class="comment">% figure</span>
+<span class="comment">% for nn=1:contract.num_frame</span>
+<span class="comment">% mapstyle2=cmap_comp_tens;% mapstyle2='hot';</span>
+<span class="comment">% frame_s=nn;</span>
+<span class="comment">% contourf(contract.x_mat,contract.y_mat,strains_s2{1,frame_s}.Exx,ncont,'LineStyle','none');</span>
+<span class="comment">% title(['Strain ',char(949),'_x_x']);</span>
+<span class="comment">% axis ij</span>
+<span class="comment">% axis([0 contract.xdim 0 contract.ydim])</span>
+<span class="comment">% caxis([-0.1,0.1]) %caxis([-max_val_s2,max_val_s2])</span>
+<span class="comment">% colormap(mapstyle2)</span>
+<span class="comment">% colorbar;</span>
+<span class="comment">% strain_frame(nn)=getframe(gcf);</span>
+<span class="comment">% end</span>
+<span class="comment">%--------------------------------------------------------------------------</span>
+</pre><img vspace="5" hspace="5" src="AR_DIC_Demo_plotting_15.png" alt=""> <img vspace="5" hspace="5" src="AR_DIC_Demo_plotting_16.png" alt=""> <img vspace="5" hspace="5" src="AR_DIC_Demo_plotting_17.png" alt=""> <pre class="codeinput"><span class="comment">%--------------------Plot reference power spectrum-------------------------</span>
+val_image=imread(<span class="string">'demo_frame.tif'</span>); <span class="comment">%reference frame</span>
+caxis_lim=[0,8.5];
+plot_power_spectrum(val_image,pxscale,caxis_lim);
+<span class="comment">%--------------------------------------------------------------------------</span>
+</pre><img vspace="5" hspace="5" src="AR_DIC_Demo_plotting_18.png" alt=""> <pre class="codeinput"><span class="comment">%------------------intuitive topography map in Tangram---------------------</span>
+<span class="comment">%input parameters</span>
+save_images=0;<span class="comment">%to save images set save_images to 1.</span>
+bits=16; <span class="comment">%image bitdepth to save</span>
+high_alpha=0.82;  <span class="comment">%.82 (Mt. Diablo elevation)</span>
+low_alpha=.93;   <span class="comment">%.93  (Sea level)</span>
+tile_size=256; <span class="comment">%standard tile size of Tangram tile (256 x 256 px)</span>
+opt=<span class="string">'all'</span>; <span class="comment">%'all' or 'maxmin'</span>
+row=6; <span class="comment">%number of rows</span>
+vidobj_holder={contract};
+frame_holder={[1,12]}; <span class="comment">%frames to plot</span>
+[RGBmat,Alpha]=export_to_map(vidobj_holder,frame_holder,row,high_alpha,low_alpha,tile_size,opt);
+<span class="keyword">if</span> save_images==1
+    imwrite(RGBmat,<span class="string">'testrgb.png'</span>,<span class="string">'png'</span>,<span class="string">'Alpha'</span>,Alpha,<span class="string">'BitDepth'</span>,bits);
+    imwrite(rgb2gray(RGBmat),<span class="string">'testgray.png'</span>,<span class="string">'png'</span>,<span class="string">'BitDepth'</span>,bits);
+<span class="keyword">end</span>
+imshow(RGBmat)
+<span class="comment">%--------------------------------------------------------------------------</span>
+</pre><img vspace="5" hspace="5" src="AR_DIC_Demo_plotting_19.png" alt=""> <pre class="codeinput"><span class="comment">%Export tree centroids to csv file for ASTC map</span>
+<span class="comment">% export_tree_centroids(leaves_s100,contract,'demo_ASTC_output');</span>
+</pre><pre class="codeinput"><span class="comment">%Example how to view saved displacement magnitude animation</span>
+<span class="comment">%uncomment and run line:</span>
+<span class="comment">% play_animation(contour_frame,1,3); %play animation 1 time at 3 fps</span>
+</pre><pre class="codeinput"><span class="comment">%Example how to view individual frame of saved velocity quiver animation</span>
+<span class="comment">%uncomment and run line:</span>
+<span class="comment">% play_animation(quiver_frame(4),1,1); %view frame 4 of quiver video</span>
+</pre><pre class="codeinput"><span class="comment">%-----------------------------To save video--------------------------------</span>
+<span class="comment">% mov=binary_video;</span>
+<span class="comment">% movie2avi(mov, 'export_video')</span>
+<span class="comment">%--------------------------------------------------------------------------</span>
+<span class="comment">%EOF</span>
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+% AR_DIC_DEMO_PLOTTING Demo to plot output of AR_DIC_Demo_process.m
+% 
+% Run this script after AR_DIC_Demo_process.m to plot results.
+% Run in sections (Ctrl + Enter) to view plots
+% Basic plots in demo:
+%   Displacement magnitude map
+%   Velocity vector field
+%   Contraction volume vs. time
+%   Contraction frequency heat map
+%   Contraction magnitude heat map
+%   Accumulative spatial contraction map
+%   Smallest independent regions
+%   Raw strain vs. time at maximum strain location
+%   Principal strain vs. time at maximum strain location
+%   Raw strain field
+%   Principal strain field
+%   Displacement vs. time at maximum location, BPM calculation
+%   Power spectrum of reference image
+%   Synthetic topography image to export
+%
+% Adaptive Reference Digital Image Correlation v 1.0 2018
+% Biomaterials and Mechanotransduction Lab University of Nebraska-Lincoln
+%
+% See also:
+% AR_DIC_DEMO
+% AR_DIC_DEMO_PROCESS
+
+%%
+load('demo_data.mat')%load results from data file. Comment out if using newly
+%calculated results.
+%Set up plotting options:
+ncont=50; %number of contour levels in plots
+qscale=4; %quiver plot arrow scale
+
+%set plot defaults, white background, linewidth of 2
+[~]=get(0,'Factory');%Commands to set all figure backgrounds to white
+set(0,'defaultfigurecolor',[1 1 1]);
+set(0,'defaultlinelinewidth',2);
+load('cmap_custom.mat')%load custom strain color map
+
+%Run in sections to explore plots:
+%%
+%REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-Displacement, velocityREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+contour_frame=plot_contour(contract,'disp',ncont,'parula');
+quiver_frame=plot_quiver(contract,'vel',qscale,'parula','auto');
+
+%supplementary:
+% disp_max=plot_disp_location(contract,'max');%displacement trace
+% binary_video=plot_binary_mask(contract);
+%REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
+
+%%
+%REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHContraction volumeREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
+plot_contraction_volume(contract);
+
+%%
+%REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHHeat mapsREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+figure_handle=heatmap_frequency(contract,ncont,'jet');
+magnitude_heatmap=heatmap_magnitude(contract,ncont,'jet');
+
+%%
+%Accumulative spatial contraction (ASC) map, smallest independent regions
+ASC_map(contract.tree,'3D',0);%ASC map
+plot_node_array(leaves_s100,contract);%smallest independent regions
+%REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
+
+%%
+%REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHStrain trace plotsREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
+plot_strain(strains_s2,'raw',xind_s2,yind_s2,contract.timestep); %raw strain at maximum location
+plot_strain(strains_principal_s2,'principal',xind_s2,yind_s2,contract.timestep);%principal strain at maximum location
+
+%%
+%REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHRaw Strain mapsREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+% plot strain maps EXX EYY EXY
+mapstyle2=cmap_comp_tens;
+frame_s=max_frame_s2;
+figure
+contourf(contract.x_mat,contract.y_mat,strains_s2{1,frame_s}.Exx,ncont,'LineStyle','none');
+title(['Strain ',char(949),'_x_x']);
+axis ij
+axis([0 contract.xdim 0 contract.ydim])
+caxis([-0.1,0.1]) %caxis([-max_val_s2,max_val_s2])
+colormap(mapstyle2)
+colorbar;
+figure
+contourf(contract.x_mat,contract.y_mat,strains_s2{1,frame_s}.Eyy,ncont,'LineStyle','none');
+title(['Strain ',char(949),'_y_y']);
+axis ij
+axis([0 contract.xdim 0 contract.ydim])
+caxis([-0.1,0.1])
+colormap(mapstyle2)
+colorbar;
+figure
+contourf(contract.x_mat,contract.y_mat,strains_s2{1,frame_s}.Exy,ncont,'LineStyle','none');
+title(['Strain ',char(949),'_x_y']);
+axis ij
+axis([0 contract.xdim 0 contract.ydim])
+caxis([-0.1,0.1])
+colormap(mapstyle2)
+colorbar;
+%REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
+
+%%
+%REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHPrincipal Strain mapsREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+%strain map S1, S2
+mapstyle2=cmap_comp_tens;% mapstyle2='hot';
+frame_s=contract.max_disp_frame;
+figure
+contourf(contract.x_mat,contract.y_mat,strains_principal_s2{1,frame_s}.s1,ncont,'LineStyle','none');
+title(['Strain ',char(949),'_1']);
+axis ij
+axis([0 contract.xdim 0 contract.ydim])
+caxis([-0.1,0.1]) %caxis([-max_val_s2,max_val_s2])
+colormap(mapstyle2)
+colorbar;
+figure
+contourf(contract.x_mat,contract.y_mat,strains_principal_s2{1,frame_s}.s2,ncont,'LineStyle','none');
+title(['Strain ',char(949),'_2']);
+axis ij
+axis([0 contract.xdim 0 contract.ydim])
+caxis([-0.1,0.1])
+colormap(mapstyle2)
+colorbar;
+figure
+contourf(contract.x_mat,contract.y_mat,strains_principal_s2{1,frame_s}.max_eng_shear,ncont,'LineStyle','none');
+title(['Strain ',char(949),'_shear']);
+axis ij
+axis([0 contract.xdim 0 contract.ydim])
+caxis([-0.1,0.1])
+colormap(mapstyle2)
+colorbar;
+
+%supplementary:
+% figure
+% for nn=1:contract.num_frame
+% mapstyle2=cmap_comp_tens;% mapstyle2='hot';
+% frame_s=nn;
+% contourf(contract.x_mat,contract.y_mat,strains_s2{1,frame_s}.Exx,ncont,'LineStyle','none');
+% title(['Strain ',char(949),'_x_x']);
+% axis ij
+% axis([0 contract.xdim 0 contract.ydim])
+% caxis([-0.1,0.1]) %caxis([-max_val_s2,max_val_s2])
+% colormap(mapstyle2)
+% colorbar;
+% strain_frame(nn)=getframe(gcf);
+% end
+%REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
+
+
+%% 
+%REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHPlot reference power spectrumREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+val_image=imread('demo_frame.tif'); %reference frame
+caxis_lim=[0,8.5];
+plot_power_spectrum(val_image,pxscale,caxis_lim);
+%REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
+
+%%
+%REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHintuitive topography map in TangramREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-
+%input parameters
+save_images=0;%to save images set save_images to 1.
+bits=16; %image bitdepth to save
+high_alpha=0.82;  %.82 (Mt. Diablo elevation)
+low_alpha=.93;   %.93  (Sea level)
+tile_size=256; %standard tile size of Tangram tile (256 x 256 px)
+opt='all'; %'all' or 'maxmin'
+row=6; %number of rows
+vidobj_holder={contract};
+frame_holder={[1,12]}; %frames to plot
+[RGBmat,Alpha]=export_to_map(vidobj_holder,frame_holder,row,high_alpha,low_alpha,tile_size,opt);
+if save_images==1
+    imwrite(RGBmat,'testrgb.png','png','Alpha',Alpha,'BitDepth',bits);
+    imwrite(rgb2gray(RGBmat),'testgray.png','png','BitDepth',bits);
+end
+imshow(RGBmat)
+%REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
+
+%%
+%Export tree centroids to csv file for ASTC map
+% export_tree_centroids(leaves_s100,contract,'demo_ASTC_output');
+
+%%
+%Example how to view saved displacement magnitude animation
+%uncomment and run line:
+% play_animation(contour_frame,1,3); %play animation 1 time at 3 fps
+
+%%
+%Example how to view individual frame of saved velocity quiver animation
+%uncomment and run line:
+% play_animation(quiver_frame(4),1,1); %view frame 4 of quiver video
+
+%%
+%REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH-To save videoREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH  
+% mov=binary_video;
+% movie2avi(mov, 'export_video')
+%REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
+%EOF
+
+##### SOURCE END #####
+--></body></html>
